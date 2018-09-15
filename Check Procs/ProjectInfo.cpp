@@ -44,8 +44,6 @@ void ProjectInfo::PrintSummary() {
 
 	for (auto proc : *procs_)
 		std::cout << proc << "\n";
-
-	std::cout << std::endl;
 }
 
 inline void ProjectInfo::IncrementLoc() {
@@ -106,9 +104,14 @@ void ProjectInfo::CheckIfProcExistsInFile(fs::path file) {
 void ProjectInfo::FindAndRemoveProcFromList(std::string line) {
 	std::vector<std::string>::iterator i;
 
+	size_t start_pos = line.find(database_name_);
+
 	// If the proc exists in the vector of procs, remove it and continue
 	for (i = procs_->begin(); i != procs_->end();) {
-		if (line.find(*i) != std::string::npos) {
+		std::string current_db_name = line
+			.substr(start_pos, start_pos + i->length());
+
+		if (i->compare(current_db_name)) {
 			i = procs_->erase(i);
 			break;
 		}
