@@ -9,5 +9,5 @@ Can be used by adding a file called "connectionString" where the project sits wh
 Then you can analyze a project by passing the name of the database that you want to check your project against, followed by the path to your project with the appropriate flags.
 
 ```
-'./Check Procs' -n database -s '/home/robert/project/
+'./Check Procs' -n database -s /home/robert/project/
 ```
