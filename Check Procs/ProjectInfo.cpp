@@ -6,7 +6,7 @@
 
 #define DBSUFFIX ".dbo."
 
-ProjectInfo::ProjectInfo(std::vector<std::string>* procs, 
+ProjectInfo::ProjectInfo(std::shared_ptr<std::vector<std::string>> procs, 
 	const std::string path_to_proj, char* db_name) {
 
 	procs_ = procs;
@@ -63,7 +63,8 @@ std::vector<fs::path> ProjectInfo::GetFilesFromDirectory(std::string path) {
 	for (auto& p : fs::directory_iterator(path)) {
 		if (fs::is_directory(p)) {
 			std::string sub_path = p.path().string();
-			std::vector<fs::path> sub_folder_files = GetFilesFromDirectory(sub_path);
+			std::vector<fs::path> sub_folder_files = 
+				GetFilesFromDirectory(sub_path);
 
 			paths_from_directory.insert(paths_from_directory.end(), 
 				sub_folder_files.begin(), sub_folder_files.end());
@@ -104,14 +105,21 @@ void ProjectInfo::CheckIfProcExistsInFile(fs::path file) {
 void ProjectInfo::FindAndRemoveProcFromList(std::string line) {
 	std::vector<std::string>::iterator i;
 
-	size_t start_pos = line.find(database_name_);
+	// Build the current proc name found in the line
+	size_t start_pos = line.find(database_name_) + database_name_.length();
+	std::string line_from_db_name = line.substr(start_pos);
+	size_t end_pos = line_from_db_name.find_first_of("\"");
 
-	// If the proc exists in the vector of procs, remove it and continue
+	std::string current_proc_name = line.substr(start_pos, end_pos);
+	size_t current_proc_name_size = current_proc_name.size();
+
+	// If the proc in the line exists in the list of procs, then remove it
 	for (i = procs_->begin(); i != procs_->end();) {
-		std::string current_db_name = line
-			.substr(start_pos, start_pos + i->length());
+		size_t list_proc_name_size = i->length();
 
-		if (i->compare(current_db_name)) {
+		if (list_proc_name_size == current_proc_name_size && 
+			i->compare(current_proc_name) == 0) {
+
 			i = procs_->erase(i);
 			break;
 		}

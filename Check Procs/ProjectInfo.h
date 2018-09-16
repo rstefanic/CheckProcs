@@ -13,13 +13,14 @@ namespace fs = std::filesystem;
 class ProjectInfo
 {
 public:
-	ProjectInfo(std::vector<std::string>* procs, const std::string path_to_proj, char* db_name);
+	ProjectInfo(std::shared_ptr<std::vector<std::string>> procs, 
+		const std::string path_to_proj, char* db_name);
 	~ProjectInfo();
 
 	void PrintSummary();
 
 private:
-	std::vector<std::string>* procs_;
+	std::shared_ptr<std::vector<std::string>> procs_;
 	std::string database_name_;
 	std::vector<fs::path> all_files_;
 	size_t original_proc_count_;

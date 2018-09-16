@@ -12,14 +12,12 @@ using namespace System::Runtime::InteropServices;
 ref class ProcFetch
 {
 public:
-	ProcFetch(char* connection_string, char* database_name, 
-		std::vector<std::string>* all_procs);
-	std::vector<std::string>* GetProcs();
+	ProcFetch(char* connection_string, char* database_name);
+	void GetProcs(std::shared_ptr<std::vector<std::string>> all_procs);
 
 private:
 	SqlConnection ^ connection_;
 	SqlCommand ^ command_;
-	std::vector<std::string>* all_procs_;
 
 	void MarshalString(System::String^ s, std::string& os);
 };
