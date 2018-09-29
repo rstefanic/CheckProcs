@@ -6,8 +6,8 @@ ProcFetch::ProcFetch(char* connection_string, char* database_name) {
 
 	System::String^ db_name = gcnew System::String(database_name);
 
-	System::String^ get_all_procs = gcnew System::String("SELECT * " +
-		"FROM " + db_name + ".information_schema.routines " +
+	System::String^ get_all_procs = gcnew System::String("SELECT " +
+		"SPECIFIC_NAME FROM " + db_name + ".information_schema.routines " +
 		"WHERE routine_type = 'PROCEDURE'");
 
 	connection_ = gcnew SqlConnection(conn_string);
@@ -22,7 +22,7 @@ void ProcFetch::GetProcs(std::shared_ptr<std::vector<std::string>> all_procs) {
 		std::string reader_string;
 
 		while (reader->Read()) {
-			MarshalString(reader->GetString(2), reader_string);
+			MarshalString(reader->GetString(0), reader_string);
 			all_procs->push_back(reader_string.c_str());
 		}
 

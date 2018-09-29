@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #include "ProjectInfo.h"
-#include <string>
-#include <iostream>
-#include <sstream>
 
 #define DBSUFFIX ".dbo."
 
