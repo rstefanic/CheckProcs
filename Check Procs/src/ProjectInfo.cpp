@@ -41,6 +41,8 @@ void ProjectInfo::PrintSummary() {
 
 	for (auto proc : *procs_)
 		std::cout << proc << "\n";
+
+	std::cout << std::endl;
 }
 
 inline void ProjectInfo::IncrementLoc() {
@@ -100,8 +102,6 @@ void ProjectInfo::CheckIfProcExistsInFile(fs::path file) {
 }
 
 void ProjectInfo::FindAndRemoveProcFromList(std::string line) {
-	std::vector<std::string>::iterator i;
-
 	// Build the current proc name found in the line
 	size_t start_pos = line.find(database_name_) + database_name_.length();
 	std::string line_from_db_name = line.substr(start_pos);
@@ -110,18 +110,33 @@ void ProjectInfo::FindAndRemoveProcFromList(std::string line) {
 	std::string current_proc_name = line.substr(start_pos, end_pos);
 	size_t current_proc_name_size = current_proc_name.size();
 
-	// If the proc in the line exists in the list of procs, then remove it
-	for (i = procs_->begin(); i != procs_->end();) {
-		size_t list_proc_name_size = i->length();
+	// If the position of the proc can be found 
+	// in the list of procs, then remove it
+	int procPos = BinarySearchOnProcList(current_proc_name);
+	if (procPos > -1) {
+		std::vector<std::string>::iterator i = procs_->begin() + procPos;
+		procs_->erase(i);
+	}
+}
 
-		if (list_proc_name_size == current_proc_name_size && 
-			i->compare(current_proc_name) == 0) {
+int ProjectInfo::BinarySearchOnProcList(const std::string line) {
+	int low = 0;
+	int high = procs_->size() - 1;
 
-			i = procs_->erase(i);
-			break;
+	while (low <= high) {
+		int mid = (high + low) / 2;
+		int comparison = line.compare(procs_->at(mid));
+
+		if (comparison == 0) {
+			return mid;
+		}
+		else if (comparison > 0) {
+			low = mid + 1;
 		}
 		else {
-			i++;
+			high = mid - 1;
 		}
 	}
+
+	return -1;
 }

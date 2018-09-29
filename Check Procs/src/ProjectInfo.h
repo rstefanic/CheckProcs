@@ -30,6 +30,7 @@ private:
 	std::vector<fs::path> GetFilesFromDirectory(std::string path);
 	void CheckIfProcExistsInFile(fs::path file);
 	void FindAndRemoveProcFromList(std::string line);
+	int BinarySearchOnProcList(const std::string line);
 	inline void IncrementLoc();
 	inline void IncrementSlocAndLoc();
 };
